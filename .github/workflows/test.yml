@@ -1,0 +1,35 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - add_ci
+
+jobs:
+  rspec:
+    name: RSpec
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: password123
+          MYSQL_DATABASE: database
+        ports:
+          - 3306:3306
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+      - name: Prepare database
+        run: bundle exec ridgepole -c mysql2://root:password123@127.0.0.1:3306/database -E test --apply
+      - name: Run tests
+        run: bundle exec rspec
+        env:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: password123
+          MYSQL_DATABASE: database
