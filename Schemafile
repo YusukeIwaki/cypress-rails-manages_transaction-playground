@@ -19,21 +19,3 @@ add_index 'users',
   name: 'index_users_name',
   unique: true,
   using: :btree
-
-create_table 'api_access_tokens', force: :cascade do |t|
-  t.bigint :user_id, null: false
-  t.string :token, null: false
-  t.datetime :expires_at, null: false
-  t.datetime :created_at, null: false
-end
-
-add_index 'api_access_tokens',
-  ['user_id'],
-  name: 'index_api_access_tokens_user_id',
-  using: :btree
-
-add_index 'api_access_tokens',
-  ['expires_at', 'token'],
-  name: 'index_api_access_tokens_token',
-  unique: true,
-  using: :btree

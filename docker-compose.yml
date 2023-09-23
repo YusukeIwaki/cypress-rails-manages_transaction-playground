@@ -18,6 +18,7 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
+      - 4000:4000
 
   mysql:
     image: mysql:8

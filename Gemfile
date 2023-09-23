@@ -15,6 +15,7 @@ gem 'tilt-jbuilder'
 gem 'zeitwerk'
 
 group :test do
-  gem 'rack-test'
+  gem 'faraday'
+  gem 'rack-test_server'
   gem 'rspec'
 end

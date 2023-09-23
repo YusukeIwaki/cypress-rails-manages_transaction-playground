@@ -95,13 +95,21 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
-  config.around(:example) do |example|
-    ActiveRecord::Base.transaction do
-      example.run
-      raise ActiveRecord::Rollback
-    end
+
+  require 'rack/test_server'
+  require './application'
+  require 'faraday'
+
+  # Configuration with `rackup` compatible options.
+  server = Rack::TestServer.new(
+            app: Application,
+            server: :puma,
+            Host: '0.0.0.0',
+            Port: 4000)
+
+  config.before(:suite) do
+    # Just launch it on a Thread
+    server.start_async
+    server.wait_for_ready
   end
 end
-
-require 'rack/test'
-require './application'
